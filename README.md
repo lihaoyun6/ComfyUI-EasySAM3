@@ -1,4 +1,4 @@
-# ComfyUI-NoCache  
+# ComfyUI-EasySAM3  
 Easiest way to use SAM3 in ComfyUI (with image/video support)   
 **[[📃中文版](./README_zh.md)]**
 
