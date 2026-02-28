@@ -1,5 +1,5 @@
 [project]
-name = "EasySAM3"
+name = "ComfyUI-EasySAM3"
 description = "Easiest way to use SAM3 in ComfyUI (with image/video support)"
 version = "0.0.1"
 license = {file = "LICENSE"} 
