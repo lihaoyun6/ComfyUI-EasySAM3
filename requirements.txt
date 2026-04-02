@@ -1,5 +1,4 @@
 tqdm
-numpy
 pillow
 modelscope
 ultralytics>=8.3.237

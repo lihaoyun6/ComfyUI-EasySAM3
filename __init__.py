@@ -22,25 +22,22 @@ apply_patch()
 model_folder = os.path.join(folder_paths.models_dir, "sam3")
 model_path = os.path.join(model_folder, "sam3.pt")
 
-def parse_points_from_string(point_str, label_value=1):
-    if not point_str:
+def parse_points_from_data(point_data, label_value=1):
+    if not point_data:
         return None, None
     
     try:
-        data = json.loads(point_str)
-        if not data:
-            return None, None
-        
-        pts = [[float(item['x']), float(item['y'])] for item in data]
+        pts = [[float(item['x']), float(item['y'])] for item in point_data]
         lbs = [label_value] * len(pts)
         
         return torch.tensor(pts), torch.tensor(lbs)
-    except Exception as e:
+    except Exception:
         return None, None
-
-def parse_points(pos_points_str, neg_points_str):
-    p_pts, p_lbs = parse_points_from_string(pos_points_str, label_value=1)
-    n_pts, n_lbs = parse_points_from_string(neg_points_str, label_value=0)
+    
+    
+def parse_points(pos_points, neg_points):
+    p_pts, p_lbs = parse_points_from_data(pos_points, label_value=1)
+    n_pts, n_lbs = parse_points_from_data(neg_points, label_value=0)
     
     custom_points = None
     custom_labels = None
@@ -52,7 +49,7 @@ def parse_points(pos_points_str, neg_points_str):
         custom_points, custom_labels = p_pts, p_lbs
     elif n_pts is not None:
         custom_points, custom_labels = n_pts, n_lbs
-    
+        
     return custom_points, custom_labels
 
 def get_mask_by_track_id(result, size, track_id=-1):
@@ -100,7 +97,8 @@ class EasySAM3Segment:
                 })
             },
             "optional": {
-                "points": ("points", {"forceInput": True})
+                "pos_points": ("STRING", {"forceInput": True}),
+                "neg_points": ("STRING", {"forceInput": True})
             }
         }
     
@@ -109,8 +107,9 @@ class EasySAM3Segment:
     RETURN_TYPES = ("MASK", "IMAGE")
     DESCRIPTION = "Run SAM3 segmentation using Ultralytics."
     
-    def main(predictor, image, prompt, threshold, object_id, visualize, points=[None, None]):
-        if points == [None, None] and prompt == "":
+    def main(predictor, image, prompt, threshold, object_id, visualize, pos_points=None, neg_points=None):
+        no_points = (pos_points == None and neg_points == None)
+        if no_points and prompt == "":
             raise ValueError("You must provide any text or point prompts!")
                 
         if not os.path.exists(model_path):
@@ -118,11 +117,11 @@ class EasySAM3Segment:
             _save_dir = snapshot_download(model_id="facebook/sam3", file_path='sam3.pt', local_dir=model_folder)
         
         num_frames, height, width, channels = image.shape
-        prompt_mode = "text" if points == [None, None] else "point"
+        prompt_mode = "text" if no_points else "point"
         print(f"[EasySAM3] Prompt mode: {prompt_mode}")
         
         prompts = prompt.split(",")
-        sam_points, sam_labels = parse_points(points[0], points[1])
+        sam_points, sam_labels = parse_points(pos_points, neg_points)
         source_input = image if num_frames > 1 else [img[..., ::-1] for img in (image * 255).byte().numpy()]
         
         if visualize:

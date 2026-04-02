@@ -20,7 +20,8 @@ class EasySAM3PointCollector:
     
     FUNCTION = "main"
     CATEGORY = "EasySAM3"
-    RETURN_TYPES = ("points",)
+    RETURN_TYPES = ("STRING", "STRING")
+    RETURN_NAMES = ("pos_points","neg_points")
     DESCRIPTION = 'Click "Continue" button after marking points to continue.'
     
     @classmethod
@@ -42,13 +43,13 @@ class EasySAM3PointCollector:
             time.sleep(0.5)
             
         final_data = self.status_storage[unique_id]["data"]
-        pos_str = json.dumps(final_data.get("positive", []))
-        neg_str = json.dumps(final_data.get("negative", []))
-        print(f"[EasySAM3] Positive points: {raw_pos_coords_str}")
-        print(f"[EasySAM3] Negative points: {raw_neg_coords_str}")
+        pos = json.dumps(final_data.get("positive", []))
+        neg = json.dumps(final_data.get("negative", []))
+        print(f"[EasySAM3] Positive points: {pos}")
+        print(f"[EasySAM3] Negative points: {neg}")
 
         del self.status_storage[unique_id]
-        return ([pos_str, neg_str],)
+        return (pos, neg)
 
     def tensor_to_base64(self, tensor):
         img_array = (tensor[0].cpu().numpy() * 255).astype(np.uint8)

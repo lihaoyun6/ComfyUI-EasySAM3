@@ -1,7 +1,7 @@
 [project]
 name = "ComfyUI-EasySAM3"
 description = "Easiest way to use SAM3 in ComfyUI (with image/video support)"
-version = "0.0.1"
+version = "0.0.2"
 license = {file = "LICENSE"} 
 # classifiers = [
 #     # For OS-independent nodes (works on all operating systems)
@@ -20,7 +20,7 @@ license = {file = "LICENSE"}
 #     "Environment :: GPU :: Apple Metal",    # Apple Metal support
 # ]
 
-dependencies = ["tqml", "numpy", "pillow", "modelscope", "ultralytics>=8.3.237"]
+dependencies = ["tqml", "modelscope", "ultralytics>=8.3.237"]
 
 [project.urls]
 Repository = "https://github.com/lihaoyun6/ComfyUI-EasySAM3"

@@ -35,7 +35,7 @@ app.registerExtension({
                         node.canvasWidget.container.style.height = newWidgetHeight + "px";
                     }
                     
-                    node.setSize([nodeWidth, newWidgetHeight + 50]);
+                    node.setSize([nodeWidth, newWidgetHeight + 80]);
                     
                     setTimeout(() => { 
                         node._isResizing = false; 
@@ -132,7 +132,7 @@ app.registerExtension({
                     if (originalOnResize) originalOnResize.apply(this, arguments);
                     if (this._isResizing) return;
                     
-                    const newWidgetHeight = Math.max(100, size[1] - 50);
+                    const newWidgetHeight = Math.max(100, size[1] - 80);
                     this.canvasWidget.widgetHeight = newWidgetHeight;
                     container.style.height = newWidgetHeight + "px";
                     this.redrawCanvas();
@@ -179,7 +179,7 @@ app.registerExtension({
                 });
 
                 this.redrawCanvas();
-                this.setSize([Math.max(400, this.size[0] || 400), 350]);
+                this.setSize([Math.max(400, this.size[0] || 400), 400]);
                 container.style.height = "300px";
 
                 return result;
