@@ -26,12 +26,15 @@ def parse_points_from_data(point_data, label_value=1):
     if not point_data:
         return None, None
     
+    if isinstance(point_data, str):
+        point_data = json.loads(point_data)
+        
     try:
         pts = [[float(item['x']), float(item['y'])] for item in point_data]
         lbs = [label_value] * len(pts)
-        
         return torch.tensor(pts), torch.tensor(lbs)
-    except Exception:
+    except Exception as e:
+        print("parse error:", e)
         return None, None
     
     
@@ -129,7 +132,7 @@ class EasySAM3Segment:
         final_masks_tensor = torch.zeros((num_frames, height, width), dtype=torch.float32, device="cpu")
         overrides = dict(conf=threshold, task="segment", mode="predict", model=model_path, half=True, save=False, verbose=False)
         
-        print("[EasySAM3] Loading SAM3...")
+        print("[EasySAM3] Loading SAM3 model...")
         try:
             
             if num_frames > 1:
